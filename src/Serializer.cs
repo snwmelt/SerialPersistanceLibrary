@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SerialPersistanceLibrary.Enums;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -8,7 +9,7 @@ namespace SerialPersistanceLibrary
 {
     public sealed class Serializer
     {
-        public static dynamic Deserialize(BaseSerializer BaseSerializer, int MaxWaitForDiskAccess, object _object, string PathToFile)
+        public static dynamic Deserialize(IOSerializationFormatter BaseSerializer, int MaxWaitForDiskAccess, object _object, string PathToFile)
         {
             if (isSeconds(MaxWaitForDiskAccess))
             {
@@ -16,12 +17,12 @@ namespace SerialPersistanceLibrary
                 {
                     switch (BaseSerializer)
                     {
-                        case BaseSerializer.BinaryFormatter:
+                        case IOSerializationFormatter.BinaryFormatter:
                             BinaryFormatter BFormatter = new BinaryFormatter();
                             return BFormatter.Deserialize(FStream);
 
 
-                        case BaseSerializer.XmlSerializer:
+                        case IOSerializationFormatter.XmlSerializer:
                             if (_object == null)
                             {
                                 throw new ArgumentException("Cannot Pass Object Of Type Null To BaseSerializer XmlSerializer");
@@ -67,11 +68,11 @@ namespace SerialPersistanceLibrary
                     catch { }
                 }
 
-                throw ioe;
+                throw;
             }
         }
 
-        public static void Serialize(BaseSerializer BaseSerializer, string FileToWrite, int MaxWaitForDiskAccess, object _object)
+        public static void Serialize(IOSerializationFormatter BaseSerializer, string FileToWrite, int MaxWaitForDiskAccess, object _object)
         {
             if (_object == null)
             {
@@ -84,12 +85,12 @@ namespace SerialPersistanceLibrary
                 {
                     switch (BaseSerializer)
                     {
-                        case BaseSerializer.BinaryFormatter:
+                        case IOSerializationFormatter.BinaryFormatter:
                             BinaryFormatter BFormatter = new BinaryFormatter();
                             BFormatter.Serialize(FStream, _object);
                             break;
 
-                        case BaseSerializer.XmlSerializer:
+                        case IOSerializationFormatter.XmlSerializer:
                             XmlSerializer XSerializer = new XmlSerializer(_object.GetType());
                             XSerializer.Serialize(Console.Out, _object);
                             break;

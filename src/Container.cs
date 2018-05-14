@@ -1,11 +1,13 @@
-﻿using System;
+﻿using SerialPersistanceLibrary.Enums;
+using SerialPersistanceLibrary.Extensions;
+using System;
 using System.IO;
 using System.Runtime.Serialization;
 
 namespace SerialPersistanceLibrary
 {
     [Serializable()]
-    public class Container : ISerializable
+    public sealed class Container : ISerializable
     {
         private String               fileName;
         private PersistantVariable[] pvs;
@@ -29,7 +31,7 @@ namespace SerialPersistanceLibrary
 
         public void Add<T>(String ID, T Variable)
         {
-            RemodelArray.Remodel(ref pvs, (new PersistantVariable(ID, typeof(T), Variable)), RemodelArrayMode.Add);
+            pvs.Refactor( new PersistantVariable( ID, typeof( T ), Variable ), ArrayRefactorAction.Add );
         }
 
         private static string baseDirectory;
@@ -89,7 +91,7 @@ namespace SerialPersistanceLibrary
                 FileName = (BaseDirectory + FileName);
             }
 
-            Container container = Serializer.Deserialize(BaseSerializer.BinaryFormatter, MaxWaitForDiskAccess, null, FileName);
+            Container container = Serializer.Deserialize(IOSerializationFormatter.BinaryFormatter, MaxWaitForDiskAccess, null, FileName);
             container.fileName  = FileName;
 
             return container;
@@ -97,7 +99,8 @@ namespace SerialPersistanceLibrary
 
         public void Remove(String ID)
         {
-            RemodelArray.Remodel(ref pvs, (new PersistantVariable(ID, null, null)), RemodelArrayMode.Remove);
+            pvs.Refactor( new PersistantVariable( ID, null, null ), ArrayRefactorAction.Remove );
+
         }
 
         private long index(String iD)
@@ -132,7 +135,7 @@ namespace SerialPersistanceLibrary
 
             lock (this)
             {
-                Serializer.Serialize(BaseSerializer.BinaryFormatter, FileName, MaxWaitForDiskAccess, this);
+                Serializer.Serialize(IOSerializationFormatter.BinaryFormatter, FileName, MaxWaitForDiskAccess, this);
             }
         }
 
