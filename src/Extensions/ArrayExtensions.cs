@@ -12,7 +12,7 @@ namespace SerialPersistanceLibrary.Extensions
         /// Refactors an System.Array according to the ArrayRefactorAction passed by the user.
         /// </summary>
         /// <typeparam name="T">Array Content Type Specifier.</typeparam>
-        /// <param name="This">System.Array Class To Be Operated On.</param>
+        /// <param name="This">System.Array Instance To Be Operated On.</param>
         /// <param name="Value">Type To Be Added or Removed.</param>
         /// <param name="Action">Action To Be Taken.</param>
         public static void Refactor<T>( this T[] This, T Value, ArrayRefactorAction Action )
